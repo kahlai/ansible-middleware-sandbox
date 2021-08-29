@@ -1,6 +1,6 @@
 ## Ansible Middleware Demo
 
-This repository simulate the ansible playbook to install wildfly and configure wildly using jcliff
+This repository simulate the ansible playbook to install wildfly and configure wildfly using jcliff
 
 ## Requirements
 
@@ -10,10 +10,11 @@ This repository simulate the ansible playbook to install wildfly and configure w
 
 | Hostname | Private IP address | Expose Port | Description                 |
 | -------- | ------------------ | ----------- | --------------------------- |
-| proxy1   | 172.16.238.11      | 10001       | Load Balancer (Wildfly)     |
-| proxy2   | 172.16.238.12      | 10002       | Load Balancer (Wildfly      |
-| slave1   | 172.16.238.22      | 18080       | Host Controller 1 (Wildfly) |
-| slave2   | 172.16.238.23      | 28080       | Host Controller 2 (Wildfly) |
+| ansible   | 172.16.238.10      |        | Ansible 2.9 |
+| proxy1   | 172.16.238.11      | 10001,2122  | Load Balancer (Wildfly)     |
+| proxy2   | 172.16.238.12      | 10002,2222  | Load Balancer (Wildfly      |
+| slave1   | 172.16.238.22      | 18080,2422 | Host Controller 1 (Wildfly) |
+| slave2   | 172.16.238.23      | 28080,2522  | Host Controller 2 (Wildfly) |
 
 ## Launch the environment
 
