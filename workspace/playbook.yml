@@ -1,0 +1,17 @@
+---
+- name: install jcliff
+  import_playbook: plays/install_jcliff.yml
+
+- name: install wildfly
+  import_playbook: plays/install_wildlfy.yml
+
+- name: setup wildfly
+  import_playbook: plays/setup_cluster.yml
+
+- name: start load balancer
+  import_playbook: plays/start_load_balancer.yml
+
+- name: start wildfly
+  import_playbook: plays/start_wildfly.yml
+
+

@@ -1,0 +1,14 @@
+- name: start load balancer
+  hosts: web_proxy
+  tasks:
+    - name: make sure temporary file exist
+      file:
+        dest: ~/.ansible/tmp
+        owner: jboss
+        group: root
+        mode: 0755
+        state: directory
+    - name: start load balancer
+      shell: "nohup /opt/jboss/wildfly/bin/standalone.sh -b {{ ansible_facts['hostname'] }} -bprivate={{ ansible_facts['hostname'] }} -Djboss.mcmp.port=10001 -c standalone-load-balancer.xml 2>&1 &"
+      become: yes
+      become_user: jboss 

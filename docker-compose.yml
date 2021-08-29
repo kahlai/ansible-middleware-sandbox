@@ -1,0 +1,72 @@
+version: '3'
+services:
+  ansible:
+    image: 'quay.io/kahlai/che-remote-plugin-ansible'
+    hostname: "ansible"
+    privileged: true
+    ports:
+      - "2022:22"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.10
+        ipv6_address: 2001:3984:3989::10
+    volumes: 
+      - ./workspace:/workspace
+  proxy1:
+    image: 'quay.io/kahlai/ssh-docker:centos8'
+    hostname: "proxy1"
+    privileged: true
+    ports:
+      - 10001:10001
+      - "2122:22"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.11
+        ipv6_address: 2001:3984:3989::11
+    volumes: 
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  proxy2:
+    image: 'quay.io/kahlai/ssh-docker:centos8'
+    privileged: true
+    ports:
+        - 10002:10001
+        - "2222:22"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.12
+        ipv6_address: 2001:3984:3989::12
+    volumes: 
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  slave1:
+    image: 'quay.io/kahlai/ssh-docker:centos8'
+    privileged: true
+    hostname: "slave1"
+    ports:
+      - 18080:8080
+      - "2422:22"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.22
+        ipv6_address: 2001:3984:3989::22
+    volumes: 
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+  slave2:
+    image: 'quay.io/kahlai/ssh-docker:centos8'
+    hostname: "slave2"
+    privileged: true
+    ports:
+      - 28080:8080
+      - "2522:22"
+    networks:
+      app_net:
+        ipv4_address: 172.16.238.23
+        ipv6_address: 2001:3984:3989::23
+    volumes: 
+      - /sys/fs/cgroup:/sys/fs/cgroup:ro
+networks:
+  app_net:
+    ipam:
+      driver: default
+      config:
+        - subnet: "172.16.238.0/24"
+        - subnet: "2001:3984:3989::/64"

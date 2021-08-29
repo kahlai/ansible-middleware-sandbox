@@ -1,0 +1,10 @@
+---
+- hosts: wildfly
+  gather_facts: true
+  vars:
+    jboss_home: "{{ lookup('env','JBOSS_HOME') }}"
+  collections:
+    - wildfly.jcliff
+  roles:
+    - jcliff
+  tasks:

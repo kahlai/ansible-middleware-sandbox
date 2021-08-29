@@ -1,0 +1,10 @@
+---
+- name: Wildfly common criteria check
+  hosts: wildfly
+  vars:
+  roles:
+    - ansible_collections_jcliff
+  tasks:
+    - import_role:
+        name: ansible_collections_jcliff.wildfly_common_criteria
+    
