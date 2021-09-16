@@ -1,0 +1,17 @@
+---
+- name: Download wildfly
+  hosts: localhost
+  gather_facts: no
+  vars:
+    wildfly_version: 24.0.1.Final 
+    wildfly_sha1: 751e3ff9128a6fbe72016552a9b864f729a710cc
+  tasks:
+    - name: Create folder 
+      file:
+        name: "tmp"
+        state: directory
+    - name: Download tar ball
+      get_url:
+        url: "https://download.jboss.org/wildfly/{{ wildfly_version }}/wildfly-{{ wildfly_version }}.tar.gz"
+        dest: "/workspace/wildfly-{{ wildfly_version }}.tar.gz"
+        checksum: "sha1:{{wildfly_sha1}}"

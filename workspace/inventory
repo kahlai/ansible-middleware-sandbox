@@ -5,3 +5,4 @@ proxy2 ansible_ssh_user=root ansible_ssh_pass=root
 [wildfly]
 slave1 ansible_ssh_user=root ansible_ssh_pass=root
 slave2 ansible_ssh_user=root ansible_ssh_pass=root
+#slave3 ansible_ssh_user=root ansible_ssh_pass=root

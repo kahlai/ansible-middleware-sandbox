@@ -1,6 +1,8 @@
 ---
 - name: Wildfy Demo
   hosts: wildfly
+  become: true
+  become_user: jboss
   vars:
     jboss_home: "/opt/jboss/wildfly"
     target_config: "standalone-full-ha.xml"

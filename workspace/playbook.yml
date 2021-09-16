@@ -1,9 +1,13 @@
 ---
-- name: install jcliff
-  import_playbook: plays/install_jcliff.yml
+
+- name: download wildfly
+  import_playbook: plays/download_wildfly.yml
 
 - name: install wildfly
-  import_playbook: plays/install_wildlfy.yml
+  import_playbook: plays/install_wildfly.yml
+
+- name: install jcliff
+  import_playbook: plays/install_jcliff.yml
 
 - name: setup wildfly
   import_playbook: plays/setup_cluster.yml

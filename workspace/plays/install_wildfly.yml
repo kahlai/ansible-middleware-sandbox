@@ -8,7 +8,7 @@
     epel_baseurl: https://download.fedoraproject.org/pub/epel/8/Everything/x86_64
     epel_rpm_key: https://src.fedoraproject.org/rpms/epel-release/raw/epel8/f/RPM-GPG-KEY-EPEL-8
     jboss_home_directory: /opt/jboss
-    wildfly_version: 24.0.0.Final 
+    wildfly_version: 24.0.1.Final 
   environment: 
     JAVA_HOME: /usr/lib/jvm/java
     WILDFLY_VERSION: "{{ wildfly_version }}"
@@ -103,20 +103,36 @@
     # Add the WildFly distribution to /opt, and make wildfly the owner of the extracted tar content
     - name: Download and Add WildFly distribution
       block:
-        - name: Download tar ball
-          get_url:
-            url: "https://download.jboss.org/wildfly/{{ wildfly_version }}/wildfly-{{ wildfly_version }}.tar.gz"
-            dest: "{{ jboss_home_directory }}/wildfly-{{ wildfly_version }}.tar.gz"
+        - name: Copy installer
+          unarchive:
+            src: "/workspace/wildfly-{{wildfly_version}}.tar.gz"
+            dest: "{{ jboss_home_directory }}"
+            owner: jboss
+            group: jboss
+            creates: /opt/jboss/wildfly-24.0.1.Final/README.txt
 
-        - name: Add WildFly distribution
-          shell: >
-            sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep $WILDFLY_SHA1 \
-            && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
-            && mv wildfly-$WILDFLY_VERSION $JBOSS_HOME \
-            && rm -rf wildfly-$WILDFLY_VERSION.tar.gz \
-            && chown -R jboss:0 ${JBOSS_HOME} \
-            && chmod -R g+rw ${JBOSS_HOME}
-          args:
-            chdir: "{{ jboss_home_directory }}"
+        - name: Rename folder
+          stat: 
+            path: /opt/jboss/wildfly-24.0.1.Final
+          register: wildfly_path 
+
+        - name: Rename folder
+          shell: 
+            cmd: mv /opt/jboss/wildfly-24.0.1.Final /opt/jboss/wildfly
+          when: wildfly_path.stat.exists
+
+        # - name: Add WildFly distribution
+        #   shell: 
+        #     chdir: "{{ jboss_home_directory }}"
+        #     creates: "$JBOSS_HOME/README.txt"
+        #     cmd: >
+        #       sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep $WILDFLY_SHA1 \
+        #       && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
+        #       && mv wildfly-$WILDFLY_VERSION $JBOSS_HOME \
+        #       && rm -rf wildfly-$WILDFLY_VERSION.tar.gz \
+        #       && chown -R jboss:0 ${JBOSS_HOME} \
+        #       && chmod -R g+rw ${JBOSS_HOME}
+            
+          
 
     

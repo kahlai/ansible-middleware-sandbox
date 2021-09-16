@@ -31,8 +31,8 @@ RUN pip install "ansible==${ANSIBLE_VERSION}" \
 	pyinotify \
 	apache-libcloud \
 	google-cloud \
-	azure \
-	bot
+	azure==4.0.0 \
+	boto \
 	boto3 \
 	docker \
 	ovirt-engine-sdk-python \
@@ -87,6 +87,9 @@ RUN echo -e '[local]\nlocalhost ansible_connection=local ansible_python_interpre
 
 
 RUN chmod -R 777 ${HOME} /etc/passwd /etc/group /etc/ansible
+
+RUN mkdir -p /home/node/.ansible/tmp/
+RUN chown -R node:node /home/node/
 
 USER node
 
