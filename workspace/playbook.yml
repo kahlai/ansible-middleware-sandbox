@@ -13,9 +13,12 @@
   import_playbook: plays/setup_cluster.yml
 
 - name: start load balancer
-  import_playbook: plays/start_load_balancer.yml
+  import_playbook: plays/start_load_balancer_systemd.yml
 
-- name: start wildfly
-  import_playbook: plays/start_wildfly.yml
+- name: start wildfly as systemd
+  import_playbook: plays/start_wildfly_systemd.yml
+
+# - name: scan vulnerability
+#   import_playbook: plays/scan_ccc.yml
 
 

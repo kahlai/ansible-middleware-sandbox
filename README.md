@@ -15,6 +15,7 @@ This repository simulate the ansible playbook to install wildfly and configure w
 | proxy2   | 172.16.238.12      | 10002,2222  | Load Balancer (Wildfly      |
 | slave1   | 172.16.238.22      | 18080,2422 | Host Controller 1 (Wildfly) |
 | slave2   | 172.16.238.23      | 28080,2522  | Host Controller 2 (Wildfly) |
+| slave3   | 172.16.238.24      | 38080,2622  | Empty (Standby for extra Wildfly) |
 
 ## Launch the environment
 
@@ -30,10 +31,10 @@ docker-compose up -d
 docker exec -it ansible-middleware-sandbox_ansible_1 bash
 ```
 
-3. Install wildfly.jcliff collection (Inside the ansible container) 
+3. Install  middleware_automation.jcliff (replacement for wildfly.jcliff) collection (Inside the ansible container) 
 
 ```bash
-ansible-galaxy collection install wildfly.jcliff
+ansible-galaxy collection install middleware_automation.jcliff
 ```
 
 4. Switch to workspace and run playbook (Inside the ansible container) 
@@ -53,3 +54,29 @@ Note: You can edit the playbook using vscode while trying it in the container.
 docker-compose down
 ```
 
+
+## Useful command
+
+Show all running containers
+```
+docker-compose ps
+```
+
+Stop all containers without remove the content
+```
+docker-compose stop
+```
+
+Stop only slave3
+```
+docker-compose stop slave3
+```
+
+Start only slave3
+```
+docker-compose start slave3
+```
+
+## Reference
+Using ansible collection jcliff to scan for common criteria
+https://github.com/ansible-middleware/ansible_collections_jcliff

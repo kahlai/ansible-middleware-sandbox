@@ -4,7 +4,7 @@
   vars:
     jboss_home: "{{ lookup('env','JBOSS_HOME') }}"
   collections:
-    - wildfly.jcliff
+    - middleware_automation.jcliff
   roles:
     - jcliff
   tasks:

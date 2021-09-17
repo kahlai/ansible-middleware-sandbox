@@ -2,9 +2,34 @@
 - name: Wildfly common criteria check
   hosts: wildfly
   vars:
-  roles:
-    - ansible_collections_jcliff
+    wildfly_user: wildfly
+    wildfly_group: wildfly
+    wildfly:
+      workdir: /opt
+      download_base_url: https://download.jboss.org/wildfly/
+      version: 24.0.1.Final
+    wildfly_home: /opt/jboss/wildfly/
+    wildfly_config_base: standalone-full-ha.xml
+    java_home: '/usr/lib/jvm/java-11-openjdk-11.0.12.0.7-0.el8_4.x86_64/'
+    java_version: '11'
+    jdk_id: openjdk
+    jboss_home: "{{ wildfly_home }}"
+  collections:
+    - middleware_automation.jcliff
+  # roles:
+  #   - ansible_collections_jcliff
   tasks:
     - import_role:
-        name: ansible_collections_jcliff.wildfly_common_criteria
+        name: middleware_automation.jcliff.wildfly_common_criteria
+
+    - name: Generate HTML report
+      template:
+        src: templates/ccc_report.j2
+        dest: /tmp/ccc_report.html
+    
+    - name: Fetch HTML report
+      fetch:
+        src: /tmp/ccc_report.html
+        dest: /workspace/ccc_report.html
+
     

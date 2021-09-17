@@ -71,7 +71,13 @@
         regexp: '^JDK_ID'
         line: 'JDK_ID=openjdk'
 
-        
+    - name: Set JBOSS_HOME
+      lineinfile:
+        dest: /etc/environment
+        state: present
+        regexp: '^WILDFLY_HOME'
+        line: 'WILDFLY_HOME={{jboss_home_directory}}/wildfly'    
+
     - name: Create jboss group
       group:
         name: jboss
@@ -109,30 +115,12 @@
             dest: "{{ jboss_home_directory }}"
             owner: jboss
             group: jboss
-            creates: /opt/jboss/wildfly-24.0.1.Final/README.txt
-
-        - name: Rename folder
-          stat: 
-            path: /opt/jboss/wildfly-24.0.1.Final
-          register: wildfly_path 
+            creates: /opt/jboss/wildfly 
 
         - name: Rename folder
           shell: 
-            cmd: mv /opt/jboss/wildfly-24.0.1.Final /opt/jboss/wildfly
-          when: wildfly_path.stat.exists
-
-        # - name: Add WildFly distribution
-        #   shell: 
-        #     chdir: "{{ jboss_home_directory }}"
-        #     creates: "$JBOSS_HOME/README.txt"
-        #     cmd: >
-        #       sha1sum wildfly-$WILDFLY_VERSION.tar.gz | grep $WILDFLY_SHA1 \
-        #       && tar xf wildfly-$WILDFLY_VERSION.tar.gz \
-        #       && mv wildfly-$WILDFLY_VERSION $JBOSS_HOME \
-        #       && rm -rf wildfly-$WILDFLY_VERSION.tar.gz \
-        #       && chown -R jboss:0 ${JBOSS_HOME} \
-        #       && chmod -R g+rw ${JBOSS_HOME}
-            
+            cmd: mv /opt/jboss/wildfly-{{wildfly_version}} /opt/jboss/wildfly
+            creates: /opt/jboss/wildfly 
           
 
     

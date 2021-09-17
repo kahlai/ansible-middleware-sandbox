@@ -1,0 +1,87 @@
+---
+- name: Create hostfile
+  hosts: slave3
+  vars:
+    etc_wildfly_folder: /etc/wildfly
+    systemd_folder: /etc/systemd/system/
+    custom_wildfly_home: true 
+  tasks:
+    - name: Make sure folder exist
+      file:
+        name: "{{etc_wildfly_folder}}"
+        state: directory
+        owner: jboss
+        group: jboss
+
+    - name: Copy config file to the systemd folder
+      copy:
+        remote_src: yes
+        src: /opt/jboss/wildfly/docs/contrib/scripts/systemd/wildfly.conf
+        dest: "{{etc_wildfly_folder}}"
+        owner: jboss
+        group: jboss
+        mode: "0644"
+
+        
+    - name: Replace setting in config file
+      lineinfile:
+        path: "{{ etc_wildfly_folder }}/wildfly.conf" 
+        regexp: "{{ item.from }}"
+        line: "{{ item.to }}"
+      loop:
+        - from: '^WILDFLY_CONFIG=standalone.xml'
+          to: 'WILDFLY_CONFIG=standalone-full-ha.xml'
+        
+    - name: Copy service file  the systemd folder
+      copy:
+        remote_src: yes
+        src: /opt/jboss/wildfly/docs/contrib/scripts/systemd/wildfly.service
+        dest: "{{systemd_folder}}"
+    
+    - name: Replace path in service file
+      lineinfile:
+        path: "{{systemd_folder}}/wildfly.service"
+        regexp: "{{ item.from }}"
+        line: "{{ item.to }}"
+      loop:
+        - from: '^ExecStart=/opt/wildfly/bin/'
+          to: 'ExecStart=/opt/jboss/wildfly/bin/launch.sh $WILDFLY_MODE $WILDFLY_CONFIG $WILDFLY_BIND'
+        - from: '^User=wildfly'
+          to: 'User=jboss'
+        
+
+    
+      
+    - name: Copy launch file the jboss bin folder
+      copy:
+        remote_src: yes
+        src: /opt/jboss/wildfly/docs/contrib/scripts/systemd/launch.sh
+        dest: /opt/jboss/wildfly/bin/
+        owner: jboss
+        group: jboss
+        mode: "0755"
+
+    - name: Replace path in service file
+      lineinfile:
+        path: "/opt/jboss/wildfly/docs/contrib/scripts/systemd/launch.sh"
+        regexp: "{{ item.from }}"
+        line: "{{ item.to }}"
+      loop:
+        - from: '^WILDFLY_HOME="/opt/wildfly"'
+          to: 'WILDFLY_HOME="/opt/jboss/wildfly"'
+     
+    - name: Set WILDFLY_HOME
+      lineinfile:
+        path: "{{ etc_wildfly_folder }}/wildfly.conf" 
+        state: present
+        regexp: '^WILDFLY_HOME'
+        line: 'WILDFLY_HOME=/opt/jboss/wildfly/' 
+
+    - name: Start wildlfy service
+      service:
+        name: wildfly
+        state: started
+        daemon_reload: yes
+        enabled: true
+      environment:
+        WILDFLY_HOME: /opt/jboss/wildfly/
