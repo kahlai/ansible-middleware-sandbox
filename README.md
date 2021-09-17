@@ -79,4 +79,10 @@ docker-compose start slave3
 
 ## Reference
 Using ansible collection jcliff to scan for common criteria
+Switch to workspace and run playbook (Inside the ansible container) 
+
+```bash
+cd /workspace/
+ansible-playbook plays/scan_ccc.yml
+```
 https://github.com/ansible-middleware/ansible_collections_jcliff
