@@ -1,0 +1,3 @@
+embed-server  --server-config={{ target_config }}
+/subsystem=undertow/servlet-container=default:read-attribute(name=stack-trace-on-error)
+stop-embedded-server

@@ -1,0 +1,26 @@
+- name: copy cli to target host
+  template:
+    src: templates/{{param}}_patch.cli.j2
+    dest: /tmp/{{param}}_patch.cli
+    mode: "0644"
+    owner: jboss
+    group: jboss
+
+- name: run the cli
+  shell:
+    cmd: "{{ jboss_home }}/bin/jboss-cli.sh --output-json --file=/tmp/{{param}}_patch.cli"
+  register: cli_result
+
+## customized for solution
+- block:
+    - set_fact:
+        fail_msg:
+          - "Failed to update x-powered-by to false"
+    - name: Check the result
+      assert: 
+        that: 
+          - (cli_result.stdout | from_json)['outcome'] == "success"
+        quiet: true
+  rescue:
+    - set_fact:
+        compliance_issues: "{{ compliance_issues + fail_msg }}"

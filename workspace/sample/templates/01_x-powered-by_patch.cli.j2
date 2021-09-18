@@ -1,0 +1,3 @@
+embed-server  --server-config={{ target_config }}
+/subsystem=undertow/servlet-container=default/setting=jsp:write-attribute(name=x-powered-by,value=false)
+stop-embedded-server
