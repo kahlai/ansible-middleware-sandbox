@@ -1,0 +1,18 @@
+jboss_home: "/opt/jboss/wildfly"
+target_config: "standalone-full-ha.xml"
+task_folder: tasks
+checklist:
+  - name: "01_x-powered-by"
+    desc: "Remove and mask informational headers."
+    apply_solution: true
+    reason: Mandatory
+    
+  - name: "02_disable-trace"
+    desc: "Disable stack trace in response body."
+    apply_solution: false
+    reason: This instance is exempted from this rules
+  
+  - name: "03_tls-version"
+    desc: "JBoss must be configured to use an approved TLS version.-TLS 1.2"
+    apply_solution: false
+    reason: TLS 1.1 Required by weblogic client

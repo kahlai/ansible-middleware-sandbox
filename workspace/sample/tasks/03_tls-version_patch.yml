@@ -1,0 +1,41 @@
+- name: copy cli to target host
+  template:
+    src: templates/{{param.name}}_check.cli.j2
+    dest: /tmp/{{param.name}}_check.cli
+    mode: "0644"
+    owner: jboss
+    group: jboss
+
+- name: run the cli
+  shell:
+    cmd: "{{ jboss_home }}/bin/jboss-cli.sh --output-json --file=/tmp/{{param.name}}_check.cli"
+  register: cli_result
+
+## customized checking
+- block:
+    - name: Check the result
+      assert: 
+        that: 
+          - (cli_result.stdout | from_json)['result'] == "none"
+        quiet: true
+    - set_fact:
+        result:
+          name: "{{param.name}}"
+          desc: "{{param.desc}}"
+          apply_solution: "{{param.apply_solution}}"
+          reason: "{{param.reason}}"
+          pass: true
+  rescue:
+    - set_fact:
+        result:
+          name: "{{param.name}}"
+          desc: "{{param.desc}}"
+          apply_solution: "{{param.apply_solution}}"
+          reason: "{{param.reason}}"
+          pass: false
+    - set_fact:
+        solutions: "{{ solutions + [param.name] }}"
+      when: "param.apply_solution"
+  always:
+    - set_fact:    
+        compliance_issues: "{{ compliance_issues + [result] }}"
